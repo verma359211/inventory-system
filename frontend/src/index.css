@@ -1,0 +1,133 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background: #f8f9fa;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.header h1 {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+}
+
+nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+nav button {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+
+nav button.active {
+  background: #0d6efd;
+  color: #fff;
+  border-color: #0d6efd;
+}
+
+main h2 {
+  margin-top: 0;
+}
+
+.error {
+  color: #b02a37;
+  margin: 0.5rem 0;
+}
+
+.empty {
+  color: #6c757d;
+}
+
+.product-form {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  max-width: 400px;
+}
+
+.product-form h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+
+.product-form label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.product-form input {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.product-form button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background: #198754;
+  color: #fff;
+  cursor: pointer;
+}
+
+.product-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.product-table th,
+.product-table td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.product-table th {
+  background: #e9ecef;
+  font-weight: 600;
+}
+
+.product-table tbody tr:last-child td {
+  border-bottom: none;
+}
