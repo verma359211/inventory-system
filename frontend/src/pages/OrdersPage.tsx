@@ -1,9 +1,12 @@
 import { useState } from "react";
 import ConfirmDialog from "../components/common/ConfirmDialog";
+import EmptyState from "../components/common/EmptyState";
 import ErrorMessage from "../components/common/ErrorMessage";
 import LoadingState from "../components/common/LoadingState";
 import Modal from "../components/common/Modal";
+import PageHeader from "../components/common/PageHeader";
 import SuccessMessage from "../components/common/SuccessMessage";
+import { TableSkeleton } from "../components/common/Skeleton";
 import OrderForm from "../components/orders/OrderForm";
 import OrderTable from "../components/orders/OrderTable";
 import { useCustomers } from "../hooks/useCustomers";
@@ -24,6 +27,11 @@ export default function OrdersPage() {
   const [deletingOrder, setDeletingOrder] = useState<Order | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  function openCreate() {
+    setFormError(null);
+    setShowCreate(true);
+  }
 
   async function handleCreate(data: OrderCreate) {
     try {
@@ -53,36 +61,54 @@ export default function OrdersPage() {
 
   return (
     <section className="page">
-      <div className="page-header">
-        <h2>Orders</h2>
-        <button
-          type="button"
-          className="btn-primary"
-          onClick={() => { setFormError(null); setShowCreate(true); }}
-        >
-          Create order
-        </button>
-      </div>
+      <PageHeader
+        title="Orders"
+        description="Create and review customer orders. Stock is reduced when an order is placed."
+        actions={
+          <button type="button" className="btn btn-primary" onClick={openCreate}>
+            Create order
+          </button>
+        }
+      />
 
       {successMessage && (
-        <SuccessMessage message={successMessage} onDismiss={() => setSuccessMessage(null)} />
+        <SuccessMessage
+          message={successMessage}
+          onDismiss={() => setSuccessMessage(null)}
+        />
       )}
       {formError && !showCreate && !deletingOrder && (
         <ErrorMessage message={formError} />
       )}
 
-      {isLoading && <LoadingState message="Loading orders..." />}
+      {isLoading && <TableSkeleton />}
       {isError && <ErrorMessage message={getErrorMessage(error)} />}
-      {!isLoading && !isError && (
+
+      {!isLoading && !isError && orders.length === 0 && (
+        <EmptyState
+          title="No orders yet"
+          description="Create an order once you have at least one customer and product in the system."
+          action={
+            <button type="button" className="btn btn-primary" onClick={openCreate}>
+              Create order
+            </button>
+          }
+        />
+      )}
+
+      {!isLoading && !isError && orders.length > 0 && (
         <OrderTable orders={orders} onDelete={setDeletingOrder} />
       )}
 
       {showCreate && (
-        <Modal title="Create order" onClose={() => { setShowCreate(false); setFormError(null); }}>
+        <Modal title="Create order" onClose={() => { setShowCreate(false); setFormError(null); }} wide>
           {formDataLoading ? (
-            <LoadingState message="Loading form data..." />
+            <LoadingState message="Loading form data..." variant="centered" />
           ) : customers.length === 0 || products.length === 0 ? (
-            <ErrorMessage message="Create at least one customer and one product before placing an order." />
+            <EmptyState
+              title="Cannot create order"
+              description="Add at least one customer and one product before placing an order."
+            />
           ) : (
             <OrderForm
               customers={customers}
@@ -98,7 +124,7 @@ export default function OrdersPage() {
       {deletingOrder && (
         <ConfirmDialog
           title="Delete order"
-          message={`Delete order #${deletingOrder.id}? This cannot be undone.`}
+          message={`Delete order #${deletingOrder.id}? This cannot be undone. Stock will not be restored.`}
           onConfirm={confirmDelete}
           onCancel={() => setDeletingOrder(null)}
           isLoading={deleteMutation.isPending}

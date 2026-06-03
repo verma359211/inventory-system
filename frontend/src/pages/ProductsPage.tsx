@@ -1,9 +1,11 @@
 import { useState } from "react";
 import ConfirmDialog from "../components/common/ConfirmDialog";
+import EmptyState from "../components/common/EmptyState";
 import ErrorMessage from "../components/common/ErrorMessage";
-import LoadingState from "../components/common/LoadingState";
 import Modal from "../components/common/Modal";
+import PageHeader from "../components/common/PageHeader";
 import SuccessMessage from "../components/common/SuccessMessage";
+import { TableSkeleton } from "../components/common/Skeleton";
 import ProductForm from "../components/products/ProductForm";
 import ProductTable from "../components/products/ProductTable";
 import {
@@ -77,7 +79,6 @@ export default function ProductsPage() {
       setSuccessMessage("Product deleted successfully.");
       setDeletingProduct(null);
     } catch (err) {
-      setSuccessMessage(null);
       setFormError(getErrorMessage(err));
       setDeletingProduct(null);
     }
@@ -85,23 +86,42 @@ export default function ProductsPage() {
 
   return (
     <section className="page">
-      <div className="page-header">
-        <h2>Products</h2>
-        <button type="button" className="btn-primary" onClick={openCreate}>
-          Add product
-        </button>
-      </div>
+      <PageHeader
+        title="Products"
+        description="Manage catalog items, pricing, and inventory levels."
+        actions={
+          <button type="button" className="btn btn-primary" onClick={openCreate}>
+            Add product
+          </button>
+        }
+      />
 
       {successMessage && (
-        <SuccessMessage message={successMessage} onDismiss={() => setSuccessMessage(null)} />
+        <SuccessMessage
+          message={successMessage}
+          onDismiss={() => setSuccessMessage(null)}
+        />
       )}
       {formError && !modalMode && !deletingProduct && (
         <ErrorMessage message={formError} />
       )}
 
-      {isLoading && <LoadingState message="Loading products..." />}
+      {isLoading && <TableSkeleton />}
       {isError && <ErrorMessage message={getErrorMessage(error)} />}
-      {!isLoading && !isError && (
+
+      {!isLoading && !isError && products.length === 0 && (
+        <EmptyState
+          title="No products yet"
+          description="Add your first product to start tracking inventory and fulfilling orders."
+          action={
+            <button type="button" className="btn btn-primary" onClick={openCreate}>
+              Add product
+            </button>
+          }
+        />
+      )}
+
+      {!isLoading && !isError && products.length > 0 && (
         <ProductTable
           products={products}
           onEdit={openEdit}
@@ -110,7 +130,7 @@ export default function ProductsPage() {
       )}
 
       {modalMode === "create" && (
-        <Modal title="Create product" onClose={closeModal}>
+        <Modal title="Add product" onClose={closeModal}>
           <ProductForm
             submitLabel="Create product"
             onSubmit={handleCreate}

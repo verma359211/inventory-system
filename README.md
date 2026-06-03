@@ -4,39 +4,31 @@ Production-ready full-stack Inventory & Order Management System built with FastA
 
 ---
 
-## Live Demo
+# Live Demo
 
 ### Frontend
 
-Add your Vercel URL here
-
-```text
 https://inventory-system-gamma-lac.vercel.app
-```
 
 ### Backend API
 
-Add your Railway URL here
-
-```text
-https://inventory-system-production-88d4.up.railway.app
-```
+https://inventory-system-production-b35e.up.railway.app
 
 ### API Documentation
 
-```text
-https://inventory-system-production-88d4.up.railway.app/docs
-```
+https://inventory-system-production-b35e.up.railway.app/docs
 
 ### Docker Hub Image
 
-```text
 https://hub.docker.com/r/verma17/inventory-backend
-```
+
+### GitHub Repository
+
+https://github.com/verma359211/inventory-system
 
 ---
 
-## Assessment Compliance
+# Assessment Requirements Covered
 
 ✅ Product Management
 
@@ -56,7 +48,7 @@ https://hub.docker.com/r/verma17/inventory-backend
 
 ✅ Docker Containerization
 
-✅ Docker Compose Orchestration
+✅ Docker Compose
 
 ✅ Docker Hub Image
 
@@ -66,135 +58,70 @@ https://hub.docker.com/r/verma17/inventory-backend
 
 ✅ Environment Variables
 
-✅ Alembic Database Migrations
-
 ✅ Responsive UI
 
 ---
 
-## Architecture
+# Technology Stack
 
-```mermaid
-flowchart TB
+| Layer | Technology |
+|---------|---------|
+| Frontend | React, TypeScript, Vite |
+| Backend | FastAPI |
+| Database | PostgreSQL |
+| ORM | SQLAlchemy |
+| Validation | Pydantic |
+| Migrations | Alembic |
+| State Management | React Query |
+| Containerization | Docker |
+| Orchestration | Docker Compose |
+| Deployment | Railway, Vercel |
 
-    User[Browser]
+---
 
-    subgraph Frontend
-        FE[React + Vite]
-    end
+# Features
 
-    subgraph Backend
-        BE[FastAPI]
-    end
+## Products
 
-    subgraph Database
-        DB[(PostgreSQL)]
-    end
+- Create Product
+- View Products
+- Update Product
+- Delete Product
+- SKU Validation
+- Inventory Tracking
 
-    User --> FE
-    FE -->|REST API| BE
-    BE --> DB
-```
+## Customers
 
-### Production Architecture
+- Create Customer
+- View Customers
+- Delete Customer
+- Unique Email Validation
+
+## Orders
+
+- Create Orders
+- View Orders
+- Order Details
+- Delete Orders
+- Automatic Stock Reduction
+- Automatic Total Calculation
+
+## Dashboard
+
+- Total Products
+- Total Customers
+- Total Orders
+- Low Stock Products
+
+---
+
+# Project Structure
 
 ```text
-Vercel (Frontend)
-        ↓
-Railway (FastAPI Backend)
-        ↓
-Neon PostgreSQL
-```
-
----
-
-## Technology Stack
-
-| Layer            | Technology                 |
-| ---------------- | -------------------------- |
-| Frontend         | React 19, TypeScript, Vite |
-| State Management | TanStack React Query       |
-| Routing          | React Router               |
-| Backend          | FastAPI                    |
-| ORM              | SQLAlchemy 2.x             |
-| Validation       | Pydantic                   |
-| Database         | PostgreSQL                 |
-| Migrations       | Alembic                    |
-| Containerization | Docker                     |
-| Orchestration    | Docker Compose             |
-| Frontend Server  | Nginx                      |
-| Deployment       | Railway, Vercel            |
-| Image Registry   | Docker Hub                 |
-
----
-
-## Features
-
-### Product Management
-
-* Create Product
-* View Products
-* Update Product
-* Delete Product
-* Unique SKU Validation
-* Inventory Tracking
-* Price Management
-
-### Customer Management
-
-* Create Customer
-* View Customers
-* Delete Customer
-* Unique Email Validation
-
-### Order Management
-
-* Create Orders
-* View Orders
-* View Order Details
-* Delete Orders
-* Automatic Total Calculation
-* Automatic Stock Reduction
-* Inventory Validation
-
-### Dashboard
-
-* Total Products
-* Total Customers
-* Total Orders
-* Low Stock Products
-
----
-
-## Project Structure
-
-```text
-inventory-system/
+inventory-system
 │
-├── backend/
-│   ├── app/
-│   │   ├── api/
-│   │   ├── core/
-│   │   ├── db/
-│   │   ├── models/
-│   │   └── schemas/
-│   │
-│   ├── alembic/
-│   ├── Dockerfile
-│   └── requirements.txt
-│
-├── frontend/
-│   ├── src/
-│   │   ├── api/
-│   │   ├── hooks/
-│   │   ├── layouts/
-│   │   ├── pages/
-│   │   ├── components/
-│   │   └── types/
-│   │
-│   ├── Dockerfile
-│   └── nginx.conf
-│
+├── backend
+├── frontend
 ├── docker-compose.yml
 ├── .env.example
 └── README.md
@@ -202,78 +129,93 @@ inventory-system/
 
 ---
 
-## API Endpoints
+# Quick Start (Recommended)
 
-### Products
+## Run Entire Application Using Docker Compose
 
-| Method | Endpoint       |
-| ------ | -------------- |
-| GET    | /products      |
-| GET    | /products/{id} |
-| POST   | /products      |
-| PUT    | /products/{id} |
-| DELETE | /products/{id} |
+Clone repository:
 
-### Customers
+```bash
+git clone https://github.com/verma359211/inventory-system.git
+cd inventory-system
+```
 
-| Method | Endpoint        |
-| ------ | --------------- |
-| GET    | /customers      |
-| GET    | /customers/{id} |
-| POST   | /customers      |
-| DELETE | /customers/{id} |
+Create environment file:
 
-### Orders
+```bash
+cp .env.example .env
+```
 
-| Method | Endpoint     |
-| ------ | ------------ |
-| GET    | /orders      |
-| GET    | /orders/{id} |
-| POST   | /orders      |
-| DELETE | /orders/{id} |
+Start application:
 
-### Dashboard
+```bash
+docker compose up --build
+```
 
-| Method | Endpoint           |
-| ------ | ------------------ |
-| GET    | /dashboard/summary |
+Application URLs:
 
----
+```text
+Frontend: http://localhost:5173
+Backend:  http://localhost:8000
+Docs:     http://localhost:8000/docs
+```
 
-## Business Rules
+Stop:
 
-### Products
-
-* SKU must be unique
-* Quantity cannot be negative
-* Price must be positive
-
-### Customers
-
-* Email must be unique
-
-### Orders
-
-* Customer must exist
-* Product must exist
-* Quantity must be positive
-* Stock must be sufficient
-* Total amount calculated by backend
-* Stock automatically reduced after order creation
+```bash
+docker compose down
+```
 
 ---
 
-## Environment Variables
+# Docker Compose Services
 
-### Root `.env`
+The compose setup runs:
 
-Used by Docker Compose.
+| Service | Purpose |
+|----------|----------|
+| frontend | React application |
+| backend | FastAPI API |
+| postgres | PostgreSQL database |
+
+PostgreSQL data is stored using a named Docker volume.
+
+---
+
+# Running Backend Docker Image Only
+
+Pull image:
+
+```bash
+docker pull verma17/inventory-backend:latest
+```
+
+Run image:
+
+```bash
+docker run -p 8000:8000 \
+-e DATABASE_URL="YOUR_DATABASE_URL" \
+-e CORS_ORIGINS="http://localhost:5173" \
+verma17/inventory-backend:latest
+```
+
+Required:
+
+- PostgreSQL database
+- DATABASE_URL environment variable
+
+The container automatically runs Alembic migrations during startup.
+
+---
+
+# Environment Variables
+
+## Docker Compose (.env)
 
 ```env
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_DB=inventory_db
-POSTGRES_PORT=5432
 
 BACKEND_PORT=8000
 FRONTEND_PORT=5173
@@ -286,11 +228,7 @@ CORS_ORIGINS=http://localhost:5173
 VITE_API_BASE_URL=http://localhost:8000
 ```
 
----
-
-### Backend `.env`
-
-Used only when running FastAPI locally without Docker.
+## Backend Local Development
 
 ```env
 APP_NAME=Inventory System API
@@ -301,11 +239,7 @@ DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5432/inventory_db
 CORS_ORIGINS=http://localhost:5173
 ```
 
----
-
-### Frontend `.env`
-
-Used only during local React development.
+## Frontend Local Development
 
 ```env
 VITE_API_BASE_URL=http://localhost:8000
@@ -313,17 +247,14 @@ VITE_API_BASE_URL=http://localhost:8000
 
 ---
 
-## Local Development
+# Local Development
 
-### Backend
+## Backend
 
 ```bash
 cd backend
 
 python -m venv .venv
-
-# Windows
-.venv\Scripts\activate
 
 pip install -r requirements.txt
 
@@ -332,21 +263,7 @@ alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
-Backend:
-
-```text
-http://localhost:8000
-```
-
-Docs:
-
-```text
-http://localhost:8000/docs
-```
-
----
-
-### Frontend
+## Frontend
 
 ```bash
 cd frontend
@@ -356,217 +273,86 @@ npm install
 npm run dev
 ```
 
-Frontend:
+---
+
+# API Endpoints
+
+## Products
 
 ```text
-http://localhost:5173
+GET    /products
+GET    /products/{id}
+POST   /products
+PUT    /products/{id}
+DELETE /products/{id}
 ```
 
----
-
-## Docker
-
-### Services
-
-| Service    | Port |
-| ---------- | ---- |
-| Frontend   | 5173 |
-| Backend    | 8000 |
-| PostgreSQL | 5432 |
-
-### Run Entire Stack
-
-```bash
-docker compose up --build
-```
-
-### Apply Database Migrations
-
-```bash
-docker compose exec backend alembic upgrade head
-```
-
-### Stop Containers
-
-```bash
-docker compose down
-```
-
-### Remove Containers and Volume
-
-```bash
-docker compose down -v
-```
-
----
-
-## Docker Files
-
-### Backend
-
-* Production-ready Dockerfile
-* Python 3.12 Slim
-* FastAPI + Uvicorn
-
-### Frontend
-
-* Multi-stage Docker Build
-* Node 22 Alpine Builder
-* Nginx Alpine Runtime
-
-### PostgreSQL
-
-* Official PostgreSQL Alpine Image
-* Named Persistent Volume
-
-### Docker Compose
-
-Runs:
-
-* Frontend Container
-* Backend Container
-* PostgreSQL Container
-
-with networking and volume persistence configured automatically.
-
----
-
-## Docker Hub
-
-Backend image available at:
+## Customers
 
 ```text
-https://hub.docker.com/r/verma17/inventory-backend
+GET    /customers
+GET    /customers/{id}
+POST   /customers
+DELETE /customers/{id}
 ```
 
-Pull image:
-
-```bash
-docker pull verma17/inventory-backend:latest
-```
-
----
-
-## Deployment
-
-### Backend (Railway)
-
-Environment Variables:
-
-```env
-APP_NAME=Inventory API
-DEBUG=false
-
-DATABASE_URL=<railway-or-neon-connection-string>
-
-CORS_ORIGINS=https://your-vercel-app.vercel.app
-```
-
-Start Command:
-
-```bash
-uvicorn app.main:app --host 0.0.0.0 --port $PORT
-```
-
-Migration Command:
-
-```bash
-alembic upgrade head
-```
-
----
-
-### Frontend (Vercel)
-
-Environment Variable:
-
-```env
-VITE_API_BASE_URL=https://inventory-system-production-88d4.up.railway.app
-```
-
-Build Command:
-
-```bash
-npm run build
-```
-
-Output Directory:
+## Orders
 
 ```text
-dist
+GET    /orders
+GET    /orders/{id}
+POST   /orders
+DELETE /orders/{id}
+```
+
+## Dashboard
+
+```text
+GET /dashboard/summary
 ```
 
 ---
 
-## QA Checklist
+# Business Rules
 
-### Products
-
-* Create Product
-* Edit Product
-* Delete Product
-* Duplicate SKU Validation
-
-### Customers
-
-* Create Customer
-* Delete Customer
-* Duplicate Email Validation
-
-### Orders
-
-* Create Order
-* View Orders
-* View Order Details
-* Delete Order
-* Inventory Validation
-
-### Dashboard
-
-* Product Count
-* Customer Count
-* Order Count
-* Low Stock Products
-
-### Docker
-
-* docker compose up --build succeeds
-* migrations apply successfully
-* frontend communicates with backend
-* database persistence works
+- SKU must be unique
+- Customer email must be unique
+- Product quantity cannot be negative
+- Orders cannot exceed available stock
+- Creating orders automatically reduces stock
+- Total amount is calculated by the backend
+- Request validation enforced using Pydantic
 
 ---
 
-## Submission Deliverables
+# Submission Deliverables
 
-### GitHub Repository
+### GitHub
 
 https://github.com/verma359211/inventory-system
 
-### Docker Hub Image
+### Docker Hub
 
 https://hub.docker.com/r/verma17/inventory-backend
 
 ### Live Frontend
 
-Add your Vercel URL
+https://inventory-system-gamma-lac.vercel.app
 
 ### Live Backend
 
-Add your Railway URL
+https://inventory-system-production-b35e.up.railway.app
 
 ---
 
-## Notes
+# Notes
 
-* Alembic is used for database schema migrations.
-* PostgreSQL data is persisted using Docker named volumes.
-* Frontend uses React Query for caching and state synchronization.
-* Backend follows REST API design principles with proper HTTP status codes and validation.
-* Environment variables are used for all configuration; no secrets are hardcoded.
+- Docker Compose runs the complete stack.
+- Backend Docker image automatically applies Alembic migrations on startup.
+- PostgreSQL data persists using Docker volumes.
+- No credentials are hardcoded.
+- Environment variables are used for all configuration.
 
 ---
-
-## License
 
 Created as part of a Software Engineer Technical Assessment.

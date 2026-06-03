@@ -18,19 +18,32 @@ export default function ConfirmDialog({
   return (
     <div className="modal-overlay" role="presentation" onClick={onCancel}>
       <div
-        className="modal"
-        role="dialog"
+        className="modal modal-confirm"
+        role="alertdialog"
         aria-modal="true"
         aria-labelledby="confirm-title"
+        aria-describedby="confirm-message"
         onClick={(event) => event.stopPropagation()}
       >
         <h3 id="confirm-title">{title}</h3>
-        <p>{message}</p>
+        <p id="confirm-message" className="confirm-message">
+          {message}
+        </p>
         <div className="modal-actions">
-          <button type="button" className="btn-secondary" onClick={onCancel} disabled={isLoading}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={onCancel}
+            disabled={isLoading}
+          >
             Cancel
           </button>
-          <button type="button" className="btn-danger" onClick={onConfirm} disabled={isLoading}>
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={onConfirm}
+            disabled={isLoading}
+          >
             {isLoading ? "Working..." : confirmLabel}
           </button>
         </div>

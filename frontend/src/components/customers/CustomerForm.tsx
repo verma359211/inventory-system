@@ -1,6 +1,7 @@
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import type { CustomerCreate } from "../../types/customer";
 import ErrorMessage from "../common/ErrorMessage";
+import FormField from "../common/FormField";
 
 interface CustomerFormProps {
   onSubmit: (data: CustomerCreate) => Promise<void>;
@@ -8,8 +9,28 @@ interface CustomerFormProps {
   serverError: string | null;
 }
 
+interface FieldErrors {
+  full_name?: string;
+  email?: string;
+  phone_number?: string;
+}
+
 function validateEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validateFields(
+  fullName: string,
+  email: string,
+  phoneNumber: string,
+): FieldErrors {
+  const errors: FieldErrors = {};
+  if (!fullName.trim()) errors.full_name = "Full name is required";
+  if (!email.trim() || !validateEmail(email.trim())) {
+    errors.email = "A valid email address is required";
+  }
+  if (!phoneNumber.trim()) errors.phone_number = "Phone number is required";
+  return errors;
 }
 
 export default function CustomerForm({
@@ -20,25 +41,21 @@ export default function CustomerForm({
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [clientError, setClientError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
+
+  const isValid = useMemo(
+    () =>
+      Object.keys(validateFields(fullName, email, phoneNumber)).length === 0,
+    [fullName, email, phoneNumber],
+  );
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!fullName.trim()) {
-      setClientError("Full name is required");
-      return;
-    }
-    if (!email.trim() || !validateEmail(email.trim())) {
-      setClientError("A valid email is required");
-      return;
-    }
-    if (!phoneNumber.trim()) {
-      setClientError("Phone number is required");
-      return;
-    }
+    const errors = validateFields(fullName, email, phoneNumber);
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) return;
 
-    setClientError(null);
     setSubmitting(true);
     try {
       await onSubmit({
@@ -49,48 +66,75 @@ export default function CustomerForm({
       setFullName("");
       setEmail("");
       setPhoneNumber("");
+      setFieldErrors({});
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <label>
-        Full Name
+    <form className="form" onSubmit={handleSubmit} noValidate>
+      <FormField id="customer-name" label="Full name" required error={fieldErrors.full_name}>
         <input
+          id="customer-name"
           type="text"
+          className={fieldErrors.full_name ? "input-invalid" : ""}
           value={fullName}
+          placeholder="Jane Doe"
           onChange={(e) => setFullName(e.target.value)}
-          required
+          aria-invalid={Boolean(fieldErrors.full_name)}
         />
-      </label>
-      <label>
-        Email
+      </FormField>
+
+      <FormField id="customer-email" label="Email" required error={fieldErrors.email}>
         <input
+          id="customer-email"
           type="email"
+          className={fieldErrors.email ? "input-invalid" : ""}
           value={email}
+          placeholder="jane@company.com"
           onChange={(e) => setEmail(e.target.value)}
-          required
+          aria-invalid={Boolean(fieldErrors.email)}
         />
-      </label>
-      <label>
-        Phone Number
+      </FormField>
+
+      <FormField
+        id="customer-phone"
+        label="Phone number"
+        required
+        error={fieldErrors.phone_number}
+      >
         <input
-          type="text"
+          id="customer-phone"
+          type="tel"
+          className={fieldErrors.phone_number ? "input-invalid" : ""}
           value={phoneNumber}
+          placeholder="+1 555 0100"
           onChange={(e) => setPhoneNumber(e.target.value)}
-          required
+          aria-invalid={Boolean(fieldErrors.phone_number)}
         />
-      </label>
-      {(clientError || serverError) && (
-        <ErrorMessage message={clientError ?? serverError ?? ""} />
+      </FormField>
+
+      {serverError && (
+        <div className="form-server-error">
+          <ErrorMessage message={serverError} title="Unable to save customer" />
+        </div>
       )}
+
       <div className="form-actions">
-        <button type="button" className="btn-secondary" onClick={onCancel} disabled={submitting}>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={onCancel}
+          disabled={submitting}
+        >
           Cancel
         </button>
-        <button type="submit" className="btn-primary" disabled={submitting}>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={submitting || !isValid}
+        >
           {submitting ? "Saving..." : "Create customer"}
         </button>
       </div>

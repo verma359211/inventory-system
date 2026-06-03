@@ -1,9 +1,11 @@
 import { useState } from "react";
 import ConfirmDialog from "../components/common/ConfirmDialog";
+import EmptyState from "../components/common/EmptyState";
 import ErrorMessage from "../components/common/ErrorMessage";
-import LoadingState from "../components/common/LoadingState";
 import Modal from "../components/common/Modal";
+import PageHeader from "../components/common/PageHeader";
 import SuccessMessage from "../components/common/SuccessMessage";
+import { TableSkeleton } from "../components/common/Skeleton";
 import CustomerForm from "../components/customers/CustomerForm";
 import CustomerTable from "../components/customers/CustomerTable";
 import { useCreateCustomer, useCustomers, useDeleteCustomer } from "../hooks/useCustomers";
@@ -20,6 +22,11 @@ export default function CustomersPage() {
   const [deletingCustomer, setDeletingCustomer] = useState<Customer | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  function openCreate() {
+    setFormError(null);
+    setShowCreate(true);
+  }
 
   async function handleCreate(data: CustomerCreate) {
     try {
@@ -47,28 +54,47 @@ export default function CustomersPage() {
 
   return (
     <section className="page">
-      <div className="page-header">
-        <h2>Customers</h2>
-        <button type="button" className="btn-primary" onClick={() => { setFormError(null); setShowCreate(true); }}>
-          Add customer
-        </button>
-      </div>
+      <PageHeader
+        title="Customers"
+        description="Maintain customer records for order placement and fulfillment."
+        actions={
+          <button type="button" className="btn btn-primary" onClick={openCreate}>
+            Add customer
+          </button>
+        }
+      />
 
       {successMessage && (
-        <SuccessMessage message={successMessage} onDismiss={() => setSuccessMessage(null)} />
+        <SuccessMessage
+          message={successMessage}
+          onDismiss={() => setSuccessMessage(null)}
+        />
       )}
       {formError && !showCreate && !deletingCustomer && (
         <ErrorMessage message={formError} />
       )}
 
-      {isLoading && <LoadingState message="Loading customers..." />}
+      {isLoading && <TableSkeleton />}
       {isError && <ErrorMessage message={getErrorMessage(error)} />}
-      {!isLoading && !isError && (
+
+      {!isLoading && !isError && customers.length === 0 && (
+        <EmptyState
+          title="No customers yet"
+          description="Create a customer before placing orders in the system."
+          action={
+            <button type="button" className="btn btn-primary" onClick={openCreate}>
+              Add customer
+            </button>
+          }
+        />
+      )}
+
+      {!isLoading && !isError && customers.length > 0 && (
         <CustomerTable customers={customers} onDelete={setDeletingCustomer} />
       )}
 
       {showCreate && (
-        <Modal title="Create customer" onClose={() => { setShowCreate(false); setFormError(null); }}>
+        <Modal title="Add customer" onClose={() => { setShowCreate(false); setFormError(null); }}>
           <CustomerForm
             onSubmit={handleCreate}
             onCancel={() => { setShowCreate(false); setFormError(null); }}

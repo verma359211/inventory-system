@@ -6,40 +6,40 @@ interface CustomerTableProps {
 }
 
 export default function CustomerTable({ customers, onDelete }: CustomerTableProps) {
-  if (customers.length === 0) {
-    return <p className="empty">No customers found.</p>;
-  }
-
   return (
-    <div className="table-wrap">
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {customers.map((customer) => (
-            <tr key={customer.id}>
-              <td>{customer.full_name}</td>
-              <td>{customer.email}</td>
-              <td>{customer.phone_number}</td>
-              <td className="actions-cell">
-                <button
-                  type="button"
-                  className="btn-link danger"
-                  onClick={() => onDelete(customer)}
-                >
-                  Delete
-                </button>
-              </td>
+    <div className="card table-card">
+      <div className="table-wrap">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Full name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th scope="col">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {customers.map((customer) => (
+              <tr key={customer.id}>
+                <td>
+                  <strong>{customer.full_name}</strong>
+                </td>
+                <td>{customer.email}</td>
+                <td>{customer.phone_number}</td>
+                <td className="actions-cell">
+                  <button
+                    type="button"
+                    className="btn-link danger"
+                    onClick={() => onDelete(customer)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

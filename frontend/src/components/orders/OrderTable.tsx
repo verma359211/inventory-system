@@ -8,41 +8,48 @@ interface OrderTableProps {
 }
 
 export default function OrderTable({ orders, onDelete }: OrderTableProps) {
-  if (orders.length === 0) {
-    return <p className="empty">No orders found.</p>;
-  }
-
   return (
-    <div className="table-wrap">
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Customer Name</th>
-            <th>Total Amount</th>
-            <th>Created At</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <tr key={order.id}>
-              <td>{order.id}</td>
-              <td>{order.customer.full_name}</td>
-              <td>{formatCurrency(order.total_amount)}</td>
-              <td>{formatDateTime(order.created_at)}</td>
-              <td className="actions-cell">
-                <Link to={`/orders/${order.id}`} className="btn-link">
-                  View Details
-                </Link>
-                <button type="button" className="btn-link danger" onClick={() => onDelete(order)}>
-                  Delete
-                </button>
-              </td>
+    <div className="card table-card">
+      <div className="table-wrap">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Total</th>
+              <th>Created</th>
+              <th scope="col">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order.id}>
+                <td>
+                  <strong>#{order.id}</strong>
+                </td>
+                <td>{order.customer.full_name}</td>
+                <td>{formatCurrency(order.total_amount)}</td>
+                <td>{formatDateTime(order.created_at)}</td>
+                <td className="actions-cell">
+                  <Link
+                    to={`/orders/${order.id}`}
+                    className="btn btn-primary btn-sm"
+                  >
+                    View details
+                  </Link>
+                  <button
+                    type="button"
+                    className="btn-link danger"
+                    onClick={() => onDelete(order)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

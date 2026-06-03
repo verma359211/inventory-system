@@ -1,6 +1,7 @@
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import type { Product, ProductCreate, ProductUpdate } from "../../types/product";
 import ErrorMessage from "../common/ErrorMessage";
+import FormField from "../common/FormField";
 
 interface ProductFormProps {
   initial?: Product;
@@ -17,6 +18,13 @@ interface FormState {
   quantity_in_stock: string;
 }
 
+interface FieldErrors {
+  name?: string;
+  sku?: string;
+  price?: string;
+  quantity_in_stock?: string;
+}
+
 function toFormState(product?: Product): FormState {
   return {
     name: product?.name ?? "",
@@ -26,16 +34,23 @@ function toFormState(product?: Product): FormState {
   };
 }
 
-function validateForm(form: FormState): string | null {
-  if (!form.name.trim()) return "Name is required";
-  if (!form.sku.trim()) return "SKU is required";
+function validateFields(form: FormState): FieldErrors {
+  const errors: FieldErrors = {};
+  if (!form.name.trim()) errors.name = "Name is required";
+  if (!form.sku.trim()) errors.sku = "SKU is required";
   const price = parseFloat(form.price);
-  if (Number.isNaN(price) || price <= 0) return "Price must be greater than zero";
-  const quantity = parseInt(form.quantity_in_stock, 10);
-  if (Number.isNaN(quantity) || quantity < 0) {
-    return "Quantity in stock cannot be negative";
+  if (!form.price.trim() || Number.isNaN(price) || price <= 0) {
+    errors.price = "Price must be greater than zero";
   }
-  return null;
+  const quantity = parseInt(form.quantity_in_stock, 10);
+  if (
+    !form.quantity_in_stock.trim() ||
+    Number.isNaN(quantity) ||
+    quantity < 0
+  ) {
+    errors.quantity_in_stock = "Quantity cannot be negative";
+  }
+  return errors;
 }
 
 export default function ProductForm({
@@ -46,18 +61,20 @@ export default function ProductForm({
   serverError,
 }: ProductFormProps) {
   const [form, setForm] = useState<FormState>(() => toFormState(initial));
-  const [clientError, setClientError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
+
+  const isValid = useMemo(
+    () => Object.keys(validateFields(form)).length === 0,
+    [form],
+  );
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const validationError = validateForm(form);
-    if (validationError) {
-      setClientError(validationError);
-      return;
-    }
+    const errors = validateFields(form);
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) return;
 
-    setClientError(null);
     setSubmitting(true);
     try {
       await onSubmit({
@@ -72,55 +89,86 @@ export default function ProductForm({
   }
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <label>
-        Name
+    <form className="form" onSubmit={handleSubmit} noValidate>
+      <FormField id="product-name" label="Name" required error={fieldErrors.name}>
         <input
+          id="product-name"
           type="text"
+          className={fieldErrors.name ? "input-invalid" : ""}
           value={form.name}
+          placeholder="e.g. Wireless Mouse"
           onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
+          aria-invalid={Boolean(fieldErrors.name)}
         />
-      </label>
-      <label>
-        SKU
+      </FormField>
+
+      <FormField id="product-sku" label="SKU" required error={fieldErrors.sku} hint="Must be unique">
         <input
+          id="product-sku"
           type="text"
+          className={fieldErrors.sku ? "input-invalid" : ""}
           value={form.sku}
+          placeholder="e.g. WM-100"
           onChange={(e) => setForm({ ...form, sku: e.target.value })}
-          required
+          aria-invalid={Boolean(fieldErrors.sku)}
         />
-      </label>
-      <label>
-        Price
+      </FormField>
+
+      <FormField id="product-price" label="Price" required error={fieldErrors.price}>
         <input
+          id="product-price"
           type="number"
           min="0.01"
           step="0.01"
+          className={fieldErrors.price ? "input-invalid" : ""}
           value={form.price}
+          placeholder="0.00"
           onChange={(e) => setForm({ ...form, price: e.target.value })}
-          required
+          aria-invalid={Boolean(fieldErrors.price)}
         />
-      </label>
-      <label>
-        Quantity In Stock
+      </FormField>
+
+      <FormField
+        id="product-qty"
+        label="Quantity in stock"
+        required
+        error={fieldErrors.quantity_in_stock}
+      >
         <input
+          id="product-qty"
           type="number"
           min="0"
           step="1"
+          className={fieldErrors.quantity_in_stock ? "input-invalid" : ""}
           value={form.quantity_in_stock}
-          onChange={(e) => setForm({ ...form, quantity_in_stock: e.target.value })}
-          required
+          placeholder="0"
+          onChange={(e) =>
+            setForm({ ...form, quantity_in_stock: e.target.value })
+          }
+          aria-invalid={Boolean(fieldErrors.quantity_in_stock)}
         />
-      </label>
-      {(clientError || serverError) && (
-        <ErrorMessage message={clientError ?? serverError ?? ""} />
+      </FormField>
+
+      {serverError && (
+        <div className="form-server-error">
+          <ErrorMessage message={serverError} title="Unable to save product" />
+        </div>
       )}
+
       <div className="form-actions">
-        <button type="button" className="btn-secondary" onClick={onCancel} disabled={submitting}>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={onCancel}
+          disabled={submitting}
+        >
           Cancel
         </button>
-        <button type="submit" className="btn-primary" disabled={submitting}>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={submitting || !isValid}
+        >
           {submitting ? "Saving..." : submitLabel}
         </button>
       </div>
