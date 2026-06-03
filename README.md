@@ -19,13 +19,13 @@ https://inventory-system-gamma-lac.vercel.app
 Add your Railway URL here
 
 ```text
-https://inventory-system-production-88d4.up.railway.app
+https://inventory-system-production-b35e.up.railway.app
 ```
 
 ### API Documentation
 
 ```text
-https://inventory-system-production-88d4.up.railway.app/docs
+https://inventory-system-production-b35e.up.railway.app/docs
 ```
 
 ### Docker Hub Image
@@ -481,7 +481,7 @@ alembic upgrade head
 Environment Variable:
 
 ```env
-VITE_API_BASE_URL=https://inventory-system-production-88d4.up.railway.app
+VITE_API_BASE_URL=https://inventory-system-production-b35e.up.railway.app
 ```
 
 Build Command:
