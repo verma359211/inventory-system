@@ -65,6 +65,14 @@ export default function AppLayout() {
       </aside>
 
       <div className="main-column">
+        <div className="app-notice" role="status">
+          <p>
+            The backend runs on Railway&apos;s free tier and may sleep when idle.
+            The first request can take 30–60 seconds — please wait patiently while
+            it wakes up.
+          </p>
+        </div>
+
         <header className="mobile-topbar">
           <button
             type="button"
