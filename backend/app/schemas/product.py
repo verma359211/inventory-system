@@ -1,11 +1,21 @@
 from datetime import datetime
+from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ProductCreate(BaseModel):
-    name: str
-    sku: str
+    name: str = Field(min_length=1, max_length=255)
+    sku: str = Field(min_length=1, max_length=100)
+    price: Decimal = Field(gt=0, decimal_places=2)
+    quantity_in_stock: int = Field(ge=0, default=0)
+
+
+class ProductUpdate(BaseModel):
+    name: str = Field(min_length=1, max_length=255)
+    sku: str = Field(min_length=1, max_length=100)
+    price: Decimal = Field(gt=0, decimal_places=2)
+    quantity_in_stock: int = Field(ge=0)
 
 
 class ProductResponse(BaseModel):
@@ -14,4 +24,7 @@ class ProductResponse(BaseModel):
     id: int
     name: str
     sku: str
+    price: Decimal
+    quantity_in_stock: int
     created_at: datetime
+    updated_at: datetime

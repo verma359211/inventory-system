@@ -1,34 +1,23 @@
-import { useState } from "react";
-import HomePage from "./pages/HomePage";
+import { Navigate, Route, Routes } from "react-router-dom";
+import AppLayout from "./layouts/AppLayout";
+import CustomersPage from "./pages/CustomersPage";
+import DashboardPage from "./pages/DashboardPage";
+import OrderDetailsPage from "./pages/OrderDetailsPage";
+import OrdersPage from "./pages/OrdersPage";
 import ProductsPage from "./pages/ProductsPage";
 
-type Page = "home" | "products";
-
 export default function App() {
-  const [page, setPage] = useState<Page>("home");
-
   return (
-    <div className="app">
-      <header className="header">
-        <h1>Inventory Management</h1>
-        <nav>
-          <button
-            type="button"
-            className={page === "home" ? "active" : ""}
-            onClick={() => setPage("home")}
-          >
-            Home
-          </button>
-          <button
-            type="button"
-            className={page === "products" ? "active" : ""}
-            onClick={() => setPage("products")}
-          >
-            Products
-          </button>
-        </nav>
-      </header>
-      <main>{page === "home" ? <HomePage /> : <ProductsPage />}</main>
-    </div>
+    <Routes>
+      <Route element={<AppLayout />}>
+        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="products" element={<ProductsPage />} />
+        <Route path="customers" element={<CustomersPage />} />
+        <Route path="orders" element={<OrdersPage />} />
+        <Route path="orders/:id" element={<OrderDetailsPage />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
   );
 }
