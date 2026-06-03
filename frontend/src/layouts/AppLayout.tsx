@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
+import AppNotice from "../components/common/AppNotice";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard" },
@@ -24,74 +25,70 @@ export default function AppLayout() {
 
   return (
     <div className="app-shell">
-      {menuOpen && (
-        <button
-          type="button"
-          className="sidebar-backdrop"
-          aria-label="Close navigation menu"
-          onClick={closeMenu}
-        />
-      )}
+      <AppNotice />
 
-      <aside
-        id="app-sidebar"
-        className={`sidebar ${menuOpen ? "open" : ""}`}
-        aria-label="Main navigation"
-      >
-        <div className="sidebar-brand">
-          <span className="brand-mark" aria-hidden="true">
-            IM
-          </span>
-          <div>
-            <p className="brand-title">Inventory</p>
-            <p className="brand-subtitle">Management</p>
-          </div>
-        </div>
-
-        <nav className="sidebar-nav">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              onClick={closeMenu}
-              className={({ isActive }) =>
-                isActive ? "nav-link active" : "nav-link"
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-      </aside>
-
-      <div className="main-column">
-        <div className="app-notice" role="status">
-          <p>
-            The backend runs on Railway&apos;s free tier and may sleep when idle.
-            The first request can take 30–60 seconds — please wait patiently while
-            it wakes up.
-          </p>
-        </div>
-
-        <header className="mobile-topbar">
+      <div className="app-body">
+        {menuOpen && (
           <button
             type="button"
-            className="menu-toggle"
-            aria-expanded={menuOpen}
-            aria-controls="app-sidebar"
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            <span className="menu-toggle-bar" />
-            <span className="menu-toggle-bar" />
-            <span className="menu-toggle-bar" />
-            <span className="visually-hidden">Toggle navigation</span>
-          </button>
-          <p className="mobile-topbar-title">Inventory Management</p>
-        </header>
+            className="sidebar-backdrop"
+            aria-label="Close navigation menu"
+            onClick={closeMenu}
+          />
+        )}
 
-        <main className="content" id="main-content">
-          <Outlet />
-        </main>
+        <aside
+          id="app-sidebar"
+          className={`sidebar ${menuOpen ? "open" : ""}`}
+          aria-label="Main navigation"
+        >
+          <div className="sidebar-brand">
+            <span className="brand-mark" aria-hidden="true">
+              IM
+            </span>
+            <div>
+              <p className="brand-title">Inventory</p>
+              <p className="brand-subtitle">Management</p>
+            </div>
+          </div>
+
+          <nav className="sidebar-nav">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                onClick={closeMenu}
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        </aside>
+
+        <div className="main-column">
+          <header className="mobile-topbar">
+            <button
+              type="button"
+              className="menu-toggle"
+              aria-expanded={menuOpen}
+              aria-controls="app-sidebar"
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              <span className="menu-toggle-bar" />
+              <span className="menu-toggle-bar" />
+              <span className="menu-toggle-bar" />
+              <span className="visually-hidden">Toggle navigation</span>
+            </button>
+            <p className="mobile-topbar-title">Inventory Management</p>
+          </header>
+
+          <main className="content" id="main-content">
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
   );
