@@ -5,8 +5,6 @@ from app.api.router import api_router
 from app.core.config import settings
 
 
-def _parse_cors_origins(origins: str) -> list[str]:
-    return [origin.strip() for origin in origins.split(",") if origin.strip()]
 
 
 app = FastAPI(
@@ -16,7 +14,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_parse_cors_origins(settings.cors_origins),
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
